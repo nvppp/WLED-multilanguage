@@ -3,8 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-	<title>WLED Settings</title>
-	<script>
+	<title class="l-psq">WLED Settings</title>
+	<script type="module">import {changeLang} from "/language.js";changeLang();</script>
+	<script type="module" async>
+		import {langArr, lL} from "/language.js";
+		let lA=langArr;
+
 		var d=document;
 		var loc = false, locip, locproto = "http:";
 		function gId(n){return d.getElementById(n);}
@@ -22,8 +26,8 @@
 			});
 			// error event
 			scE.addEventListener("error", (ev) => {
-				console.log("Error on loading file", ev);
-				alert("Loading of configuration script failed.\nIncomplete page data!");
+				console.log(lA["pzq"][lL], ev);
+				alert(lA["pzw"][lL]);
 			});
 		}
 		function S() {
@@ -32,7 +36,7 @@
 				loc = true;
 				locip = localStorage.getItem('locIp');
 				if (!locip) {
-					locip = prompt("File Mode. Please enter WLED IP!");
+					locip = prompt(lA["pze"][lL]);
 					localStorage.setItem('locIp', locip);
 				}
 			} else {
@@ -50,6 +54,8 @@
 		function getURL(path) {
 			return (loc ? locproto + "//" + locip : "") + path;
 		}
+		window.S = S;
+		window.getURL = getURL;
 	</script>
 	<style>
 		body {
@@ -74,18 +80,26 @@
 			margin: 2vh auto 0;
 			cursor: pointer;
 		}
+		.l_body { /*эффект для устранения мерцания замены текста на странице*/
+			animation: fi 0.3s .7s both;
+		}
+		@keyframes fi {
+			from { opacity: 0; }
+			to   { opacity: 1; }
+		}
 	</style>
 </head>
-<body onload="S()">
-<button type=submit id="b" onclick="window.location=getURL('/')">Back</button>
-<button type="submit" onclick="window.location=getURL('/settings/wifi')">WiFi Setup</button>
-<button type="submit" onclick="window.location=getURL('/settings/leds')">LED Preferences</button>
-<button id="2dbtn" type="submit" onclick="window.location=getURL('/settings/2D')">2D Configuration</button>
-<button type="submit" onclick="window.location=getURL('/settings/ui')">User Interface</button>
-<button id="dmxbtn" style="display:none;" type="submit" onclick="window.location=getURL('/settings/dmx')">DMX Output</button>
-<button type="submit" onclick="window.location=getURL('/settings/sync')">Sync Interfaces</button>
-<button type="submit" onclick="window.location=getURL('/settings/time')">Time & Macros</button>
-<button type="submit" onclick="window.location=getURL('/settings/um')">Usermods</button>
-<button type="submit" onclick="window.location=getURL('/settings/sec')">Security & Updates</button>
+<body class="l_body" onload="S()">
+	<button class="l-plb" type=submit id="b" onclick="window.location=getURL('/')"><!--Back--></button>
+	<button class="l-psw" type="submit" onclick="window.location=getURL('/settings/wifi')"><!--WiFi Setup--></button>
+	<button class="l-psp" type="submit" onclick="window.location=getURL('/settings/leds')"><!--LED Preferences--></button>
+	<button class="l-psc" id="2dbtn" type="submit" onclick="window.location=getURL('/settings/2D')"><!--2D Configuration--></button>
+	<button class="l-psi" type="submit" onclick="window.location=getURL('/settings/ui')"><!--User Interface--></button>
+	<button class="l-psd" id="dmxbtn" style="display:none;" type="submit" onclick="window.location=getURL('/settings/dmx')"><!--DMX Output--></button>
+	<button class="l-psf" type="submit" onclick="window.location=getURL('/settings/sync')"><!--Sync Interfaces--></button>
+	<button class="l-pst" type="submit" onclick="window.location=getURL('/settings/time')"><!--Time & Macros--></button>
+	<button class="l-psu" type="submit" onclick="window.location=getURL('/settings/um')"><!--Usermods--></button>
+	<button class="l-psl" type="submit" onclick="window.location=getURL('/settings/lang')"><!--Language--></button>
+	<button class="l-pss" type="submit" onclick="window.location=getURL('/settings/sec')"><!--Security & Updates--><!-- Autoreplaced from language.js --></button>
 </body>
 </html>

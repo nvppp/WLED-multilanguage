@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-	<title>WiFi Settings</title>
-	<script>
+	<title class="l-pwwq">WiFi Settings</title>
+	<script type="module">import {changeLang} from "/language.js";changeLang();</script>
+	<script type="module" async>
+		import {langArr, lL} from "/language.js";
+		let lA=langArr;
+
 		var d = document;
 		var loc = false, locip, locproto = "http:";
 		var scanLoops = 0, preScanSSID = "";
-
 		function gId(e) { return d.getElementById(e); }
 		function cE(e) { return d.createElement(e); }
 		function H(){window.open("https://kno.wled.ge/features/settings/#wifi-settings");}
@@ -16,7 +19,7 @@
 		function N() {
 			const button = gId("scan");
 			button.disabled = true;
-			button.textContent = "Scanning...";
+			button.textContent = lA["pzwq"][lL];
 
 			fetch(getURL("/json/net")).then((response) => {
 				return response.json();
@@ -78,14 +81,14 @@
 					const option = cE("option");
 
 					option.setAttribute("value", "!Cs");
-					option.textContent = `Other network...`;
+					option.textContent = lA["pzww"][lL];
 					select.appendChild(option);
 
 					cs.replaceWith(select);
 				}
 
 				button.disabled = false;
-				button.textContent = "Scan";
+				button.textContent = lA["pzwe"][lL];
 			});
 		}
 		// replace WiFi select with custom SSID input field again
@@ -114,8 +117,8 @@
 			});
 			// error event
 			scE.addEventListener("error", (ev) => {
-				console.log("Error on loading file", ev);
-				alert("Loading of configuration script failed.\nIncomplete page data!");
+				console.log(lA["pzq"][lL], ev);
+				alert(lA["pzw"][lL]);
 			});
 		}
 		function S() {
@@ -124,7 +127,7 @@
 				loc = true;
 				locip = localStorage.getItem('locIp');
 				if (!locip) {
-					locip = prompt("File Mode. Please enter WLED IP!");
+					locip = prompt(lA["pze"][lL]);
 					localStorage.setItem('locIp', locip);
 				}
 			} else {
@@ -143,71 +146,75 @@
 		function getURL(path) {
 			return (loc ? locproto + "//" + locip : "") + path;
 		}
+		window.gId = gId;
+		window.cE = cE;
+		window.H = H;
+		window.B = B;
+		window.N = N;
+		window.T = T;
+		window.loadJS = loadJS;
+		window.S = S;
+		window.getURL = getURL;
 	</script>
 	<style>@import url("style.css");</style>
 </head>
-<body onload="S()">
+<body class="l_body" onload="S()">
 	<form id="form_s" name="Sf" method="post">
 		<div class="toprow">
-		<div class="helpB"><button type="button" onclick="H()">?</button></div>
-		<button type="button" onclick="B()">Back</button><button type="submit">Save & Connect</button><hr>
+			<div class="helpB"><button type="button" onclick="H()">?</button></div>
+			<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pld" type="submit"><!--Save & Connect--></button><hr>
 		</div>
-		<h2>WiFi setup</h2>
-		<h3>Connect to existing network</h3>
-		<button type="button" id="scan" onclick="N()">Scan</button><br>
-		Network name (SSID, empty to not connect):<br>
+		<h2 class="l-pwww"><!--WiFi setup--></h2>
+		<h3 class="l-pwwe"><!--Connect to existing network--></h3>
+		<button class="l-pzwe" type="button" id="scan" onclick="N()"><!--Scan--></button><br>
+		<span class="l-pwwr"><!--Network name (SSID, empty to not connect):--></span><br>
 		<input type="text" id="CS" name="CS" maxlength="32"><br>
-		Network password: <br> <input type="password" name="CP" maxlength="63"><br>
-		Static IP (leave at 0.0.0.0 for DHCP):<br>
+		<span class="l-pwwt"><!--Network password:--></span> <br> <input type="password" name="CP" maxlength="63"><br>
+		<span class="l-pwwy"><!--Static IP (leave at 0.0.0.0 for DHCP):--></span><br>
 		<input name="I0" type="number" class="s" min="0" max="255" required> .
 		<input name="I1" type="number" class="s" min="0" max="255" required> .
 		<input name="I2" type="number" class="s" min="0" max="255" required> .
 		<input name="I3" type="number" class="s" min="0" max="255" required><br>
-		Static gateway:<br>
+		<span class="l-pwwu"><!--Static gateway:--></span><br>
 		<input name="G0" type="number" class="s" min="0" max="255" required> .
 		<input name="G1" type="number" class="s" min="0" max="255" required> .
 		<input name="G2" type="number" class="s" min="0" max="255" required> .
 		<input name="G3" type="number" class="s" min="0" max="255" required><br>
-		Static subnet mask:<br>
+		<span class="l-pwwi"><!--Static subnet mask:--></span><br>
 		<input name="S0" type="number" class="s" min="0" max="255" required> .
 		<input name="S1" type="number" class="s" min="0" max="255" required> .
 		<input name="S2" type="number" class="s" min="0" max="255" required> .
 		<input name="S3" type="number" class="s" min="0" max="255" required><br>
-		mDNS address (leave empty for no mDNS):<br>
+		<span class="l-pwwo"><!--mDNS address (leave empty for no mDNS):--></span><br>
 		http:// <input type="text" name="CM" maxlength="32"> .local<br>
-		Client IP: <span class="sip"> Not connected </span> <br>
-		<h3>Configure Access Point</h3>
-		AP SSID (leave empty for no AP):<br> <input type="text" name="AS" maxlength="32"><br>
-		Hide AP name: <input type="checkbox" name="AH"><br>
-		AP password (leave empty for open):<br> <input type="password" name="AP" maxlength="63" pattern="(.{8,63})|()" title="Empty or min. 8 characters"><br>
-		Access Point WiFi channel: <input name="AC" type="number" class="xs" min="1" max="13" required><br>
-		AP opens:
+		<span class="l-pwwp"><!--Client IP:--></span> <span class="sip"> <span class="l-pwwa"><!--Not connected--></span> </span> <br>
+		<h3 class="l-pwws"><!--Configure Access Point--></h3>
+		<span class="l-pwwd"><!--AP SSID (leave empty for no AP):--></span><br> <input type="text" name="AS" maxlength="32"><br>
+		<span class="l-pwwf"><!--Hide AP name:--></span> <input type="checkbox" name="AH"><br>
+		<span class="l-pwwg"><!--AP password (leave empty for open):--></span><br> <input type="password" name="AP" maxlength="63" pattern="(.{8,63})|()" title="Empty or min. 8 characters"><br>
+		<span class="l-pwwh"><!--Access Point WiFi channel:--></span> <input name="AC" type="number" class="xs" min="1" max="13" required><br>
+		<span class="l-pwwj"><!--AP opens:--></span>
 		<select name="AB">
-		<option value="0">No connection after boot</option>
-		<option value="1">Disconnected</option>
-		<option value="2">Always</option>
-		<option value="3">Never (not recommended)</option></select><br>
-		AP IP: <span class="sip"> Not active </span><br>
-		<h3>Experimental</h3>
-		Force 802.11g mode (ESP8266 only): <input type="checkbox" name="FG"><br>
-		Disable WiFi sleep: <input type="checkbox" name="WS"><br>
-		<i>Can help with connectivity issues.<br>
-		Do not enable if WiFi is working correctly, increases power consumption.</i>
-
+			<option value="0" class="l-pwwk"><!--No connection after boot--></option>
+			<option value="1" class="l-pwwl"><!--Disconnected--></option>
+			<option value="2" class="l-pwwz"><!--Always--></option>
+			<option value="3" class="l-pwwx"><!--Never (not recommended)--></option></select><br>
+		<span class="l-pwwc"><!--AP IP:--></span> <span class="sip"> <span class="l-pwwv">Not active</span> </span><br>
+		<h3 class="l-pwwb"><!--Experimental--></h3>
+		<span class="l-pwwn"><!--Force 802.11g mode (ESP8266 only):--></span> <input type="checkbox" name="FG"><br>
+		<span class="l-pwwm"><!--Disable WiFi sleep:--></span> <input type="checkbox" name="WS"><br>
+		<i class="l-pwkq"><!--Can help with connectivity issues.<br>Do not enable if WiFi is working correctly, increases power consumption.--></i>
 		<div id="remd">
-			<h3>Wireless Remote</h3>
-			<i>Listen for events over ESP-NOW<br>
-			Keep disabled if not using a remote, increases power consumption.<br></i>
-		
-			Enable Remote: <input type="checkbox" name="RE"><br>
-			Hardware MAC: <input type="text" name="RMAC"><br>
-			Last Seen: <span class="rlid">None</span> <br>
+			<h3 class="l-pwkw"><!--Wireless Remote--></h3>
+			<i class="l-pwke"><!--Listen for events over ESP-NOW<br>Keep disabled if not using a remote, increases power consumption.<br>--></i>
+			<span class="l-pwkr"><!--Enable Remote:--></span> <input type="checkbox" name="RE"><br>
+			<span class="l-pwkt"><!--Hardware MAC:--></span> <input type="text" name="RMAC"><br>
+			<span class="l-pwky"><!--Last Seen:--></span> <span class="rlid l-zkv">None</span> <br>
 		</div>
-
 		<div id="ethd">
-			<h3>Ethernet Type</h3>
+			<h3 class="l-pwku"><!--Ethernet Type--></h3>
 			<select name="ETH">
-				<option value="0">None</option>
+				<option value="0" class="l-zkv"><!--None--></option>
 				<option value="9">ABC! WLED V43 & compatible</option>
 				<option value="2">ESP32-POE</option>
 				<option value="6">ESP32Deux</option>
@@ -221,7 +228,7 @@
 			</select><br><br>
 		</div>
 		<hr>
-		<button type="button" onclick="B()">Back</button><button type="submit">Save & Connect</button>
+		<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pld" type="submit"><!--Save & Connect--><!-- Autoreplaced from language.js --></button>
 	</form>
 </body>
 </html>

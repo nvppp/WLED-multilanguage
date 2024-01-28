@@ -22,10 +22,10 @@ bool handleIfNoneMatchCacheHeader(AsyncWebServerRequest* request);
 void setStaticContentCacheHeaders(AsyncWebServerResponse *response);
 
 // define flash strings once (saves flash memory)
-static const char s_redirecting[] PROGMEM = "Redirecting...";
+static const char s_redirecting[] PROGMEM = "<span class=\"l-xcq\"></span>";//Redirecting...
 static const char s_content_enc[] PROGMEM = "Content-Encoding";
-static const char s_unlock_ota [] PROGMEM = "Please unlock OTA in security settings!";
-static const char s_unlock_cfg [] PROGMEM = "Please unlock settings using PIN code!";
+static const char s_unlock_ota [] PROGMEM = "<span class=\"l-xce\"></span>";//Please unlock OTA in security settings!
+static const char s_unlock_cfg [] PROGMEM = "<span class=\"l-xcr\"></span>";//Please unlock settings using PIN code!
 
 //Is this an IP?
 bool isIp(String str) {
@@ -50,7 +50,7 @@ void handleUpload(AsyncWebServerRequest *request, const String& filename, size_t
     }
 
     request->_tempFile = WLED_FS.open(finalname, "w");
-    DEBUG_PRINT(F("Uploading "));
+    DEBUG_PRINT(F("xct"));//Uploading
     DEBUG_PRINTLN(finalname);
     if (finalname.equals("/presets.json")) presetsModifiedTime = toki.second();
   }
@@ -61,10 +61,10 @@ void handleUpload(AsyncWebServerRequest *request, const String& filename, size_t
     request->_tempFile.close();
     if (filename.indexOf(F("cfg.json")) >= 0) { // check for filename with or without slash
       doReboot = true;
-      request->send(200, "text/plain", F("Configuration restore successful.\nRebooting..."));
+      request->send(200, "text/plain", F("xcy"));//Configuration restore successful.\nRebooting...
     } else {
       if (filename.indexOf(F("palette")) >= 0 && filename.indexOf(F(".json")) >= 0) strip.loadCustomPalettes();
-      request->send(200, "text/plain", F("File Uploaded!"));
+      request->send(200, "text/plain", F("xcu"));//File Uploaded!
     }
     cacheInvalidate++;
   }
@@ -81,7 +81,7 @@ void createEditHandler(bool enable) {
       #endif
     #else
       editHandler = &server.on("/edit", HTTP_GET, [](AsyncWebServerRequest *request){
-        serveMessage(request, 501, "Not implemented", F("The FS editor is disabled in this build."), 254);
+        serveMessage(request, 501, "<span class=\"l-xxq\"></span>", F("<span class=\"l-xxw\"></span>"), 254); // Not implemented The FS editor is disabled in this build.
       });
     #endif
   } else {
@@ -161,7 +161,7 @@ void initServer()
   });
 
   server.on("/reset", HTTP_GET, [](AsyncWebServerRequest *request){
-    serveMessage(request, 200,F("Rebooting now..."),F("Please wait ~10 seconds..."),129);
+    serveMessage(request, 200,F("<span class=\"l-xxe\"></span>"),F("<span class=\"l-xxr\"></span>"),129);// Rebooting now... Please wait ~10 seconds...
     doReboot = true;
   });
 
@@ -245,7 +245,7 @@ void initServer()
 #endif
 
   server.on("/teapot", HTTP_GET, [](AsyncWebServerRequest *request){
-    serveMessage(request, 418, F("418. I'm a teapot."), F("(Tangible Embedded Advanced Project Of Twinkling)"), 254);
+    serveMessage(request, 418, F("<span class=\"l-xxt\"></span>"), F("<span class=\"l-xxy\"></span>"), 254);//418. I'm a teapot. (Tangible Embedded Advanced Project Of Twinkling)
   });
 
   server.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request) {},
@@ -278,13 +278,27 @@ void initServer()
     request->send(response);
   });
 
+  server.on("/language.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    AsyncWebServerResponse *response = request->beginResponse_P(200, "application/javascript", languageJs, languageJs_length);
+    response->addHeader(FPSTR(s_content_enc),"gzip");
+    setStaticContentCacheHeaders(response);
+    request->send(response);
+  });
+
+  server.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    AsyncWebServerResponse *response = request->beginResponse_P(200, "application/javascript", indexJs, indexJs_length);
+    response->addHeader(FPSTR(s_content_enc),"gzip");
+    setStaticContentCacheHeaders(response);
+    request->send(response);
+  });
+
   createEditHandler(correctPIN);
 
 #ifndef WLED_DISABLE_OTA
   //init ota page
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest *request){
     if (otaLock) {
-      serveMessage(request, 401, "Access Denied", FPSTR(s_unlock_ota), 254);
+      serveMessage(request, 401, "<span class=\"l-xxu\"></span>", FPSTR(s_unlock_ota), 254);//Access Denied
     } else
       serveSettings(request); // checks for "upd" in URL and handles PIN
   });
@@ -295,19 +309,19 @@ void initServer()
       return;
     }
     if (otaLock) {
-      serveMessage(request, 401, "Access Denied", FPSTR(s_unlock_ota), 254);
+      serveMessage(request, 401, "<span class=\"l-xxu\"></span>", FPSTR(s_unlock_ota), 254);//Access Denied
       return;
     }
     if (Update.hasError()) {
-      serveMessage(request, 500, F("Update failed!"), F("Please check your file and retry!"), 254);
+      serveMessage(request, 500, F("<span class=\"l-xxi\"></span>"), F("<span class=\"l-xxo\"></span>"), 254);//Update failed! Please check your file and retry!
     } else {
-      serveMessage(request, 200, F("Update successful!"), F("Rebooting..."), 131);
+      serveMessage(request, 200, F("<span class=\"l-xxp\"></span>"), F("<span class=\"l-xxa\"></span>"), 131);//Update successful! Rebooting...
       doReboot = true;
     }
   },[](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final){
     if (!correctPIN || otaLock) return;
     if(!index){
-      DEBUG_PRINTLN(F("OTA Update Start"));
+      DEBUG_PRINTLN(F("<span class=\"l-xci\"></span>"));//OTA Update Start
       WLED::instance().disableWatchdog();
       usermods.onUpdateBegin(true); // notify usermods that update is about to begin (some may require task de-init)
       lastEditTime = millis(); // make sure PIN does not lock during update
@@ -319,9 +333,9 @@ void initServer()
     if(!Update.hasError()) Update.write(data, len);
     if(final){
       if(Update.end(true)){
-        DEBUG_PRINTLN(F("Update Success"));
+        DEBUG_PRINTLN(F("<span class=\"l-xco\"></span>"));//Update Success
       } else {
-        DEBUG_PRINTLN(F("Update Failed"));
+        DEBUG_PRINTLN(F("<span class=\"l-xcp\"></span>"));//Update Failed
         usermods.onUpdateBegin(false); // notify usermods that update has failed (some may require task init)
         WLED::instance().enableWatchdog();
       }
@@ -329,7 +343,7 @@ void initServer()
   });
 #else
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest *request){
-    serveMessage(request, 501, "Not implemented", F("OTA updating is disabled in this build."), 254);
+    serveMessage(request, 501, "<span class=\"l-xxq\"></span>", F("<span class=\"l-xxs\"></span>"), 254);//Not implemented OTA updating is disabled in this build.
   });
 #endif
 
@@ -340,7 +354,7 @@ void initServer()
   });
   #else
   server.on("/dmxmap", HTTP_GET, [](AsyncWebServerRequest *request){
-    serveMessage(request, 501, "Not implemented", F("DMX support is not enabled in this build."), 254);
+    serveMessage(request, 501, "<span class=\"l-xxq\"></span>", F("<span class=\"l-xxd\"></span>"), 254);//Not implemented DMX support is not enabled in this build.
   });
   #endif
 
@@ -471,7 +485,7 @@ String msgProcessor(const String& var)
     if (optt < 60) //redirect to settings after optionType seconds
     {
       messageBody += F("<script>setTimeout(RS,");
-      messageBody +=String(optt*1000);
+      messageBody +=String(optt*2000);
       messageBody += F(")</script>");
     } else if (optt < 120) //redirect back after optionType-60 seconds, unused
     {
@@ -483,10 +497,10 @@ String msgProcessor(const String& var)
       messageBody += F(")</script>");
     } else if (optt == 253)
     {
-      messageBody += F("<br><br><form action=/settings><button class=\"bt\" type=submit>Back</button></form>"); //button to settings
+      messageBody += F("<br><br><form action=/settings><button class=\"bt l-plb\" type=submit></button></form>"); //button to settings //Back
     } else if (optt == 254)
     {
-      messageBody += F("<br><br><button type=\"button\" class=\"bt\" onclick=\"B()\">Back</button>");
+      messageBody += F("<br><br><button type=\"button\" class=\"bt l-plb\" onclick=\"B()\"></button>");//Back
     }
     return messageBody;
   }
@@ -532,13 +546,13 @@ void serveSettingsJS(AsyncWebServerRequest* request)
   char buf[SETTINGS_STACK_BUF_SIZE+37];
   buf[0] = 0;
   byte subPage = request->arg(F("p")).toInt();
-  if (subPage > 10) {
-    strcpy_P(buf, PSTR("alert('Settings for this request are not implemented.');"));
+  if (subPage > 11) {
+    strcpy_P(buf, PSTR("alert(lA['xca'][lL]);"));//Settings for this request are not implemented.
     request->send(501, "application/javascript", buf);
     return;
   }
   if (subPage > 0 && !correctPIN && strlen(settingsPIN)>0) {
-    strcpy_P(buf, PSTR("alert('PIN incorrect.');"));
+    strcpy_P(buf, PSTR("alert(lA['xcs'][lL]);"));//PIN incorrect.
     request->send(401, "application/javascript", buf);
     return;
   }
@@ -573,6 +587,7 @@ void serveSettings(AsyncWebServerRequest* request, bool post)
     else if (url.indexOf("um")   > 0) subPage = SUBPAGE_UM;
     else if (url.indexOf("2D")   > 0) subPage = SUBPAGE_2D;
     else if (url.indexOf("lock") > 0) subPage = SUBPAGE_LOCK;
+    else if (url.indexOf("lang") > 0) subPage = SUBPAGE_LANG;
   }
   else if (url.indexOf("/update") >= 0) subPage = SUBPAGE_UPDATE; // update page, for PIN check
   //else if (url.indexOf("/edit")   >= 0) subPage = 10;
@@ -586,29 +601,30 @@ void serveSettings(AsyncWebServerRequest* request, bool post)
   // if OTA locked or too frequent PIN entry requests fail hard
   if ((subPage == SUBPAGE_WIFI && wifiLock && otaLock) || (post && !correctPIN && millis()-lastEditTime < PIN_RETRY_COOLDOWN))
   {
-    serveMessage(request, 401, "Access Denied", FPSTR(s_unlock_ota), 254); return;
+    serveMessage(request, 401, "<span class=\"l-xxu\"></span>", FPSTR(s_unlock_ota), 254); return;//Access Denied
   }
 
   if (post) { //settings/set POST request, saving
     if (subPage != SUBPAGE_WIFI || !(wifiLock && otaLock)) handleSettingsSet(request, subPage);
 
-    char s[32];
-    char s2[45] = "";
+    char s[100];//32/55
+    char s2[100] = "";//45/45
 
     switch (subPage) {
-      case SUBPAGE_WIFI   : strcpy_P(s, PSTR("WiFi")); strcpy_P(s2, PSTR("Please connect to the new IP (if changed)")); forceReconnect = true; break;
-      case SUBPAGE_LEDS   : strcpy_P(s, PSTR("LED")); break;
-      case SUBPAGE_UI     : strcpy_P(s, PSTR("UI")); break;
-      case SUBPAGE_SYNC   : strcpy_P(s, PSTR("Sync")); break;
-      case SUBPAGE_TIME   : strcpy_P(s, PSTR("Time")); break;
-      case SUBPAGE_SEC    : strcpy_P(s, PSTR("Security")); if (doReboot) strcpy_P(s2, PSTR("Rebooting, please wait ~10 seconds...")); break;
-      case SUBPAGE_DMX    : strcpy_P(s, PSTR("DMX")); break;
-      case SUBPAGE_UM     : strcpy_P(s, PSTR("Usermods")); break;
-      case SUBPAGE_2D     : strcpy_P(s, PSTR("2D")); break;
-      case SUBPAGE_PINREQ : strcpy_P(s, correctPIN ? PSTR("PIN accepted") : PSTR("PIN rejected")); break;
+      case SUBPAGE_WIFI   : strcpy_P(s, PSTR("<span class=\"l-xcd\"></span>")); strcpy_P(s2, PSTR("<span class=\"l-xcf\"></span>")); forceReconnect = true; break;//WiFi  Please connect to the new IP (if changed)
+      case SUBPAGE_LEDS   : strcpy_P(s, PSTR("<span class=\"l-xcg\"></span>")); break;//LED
+      case SUBPAGE_UI     : strcpy_P(s, PSTR("<span class=\"l-xch\"></span>")); break;//UI
+      case SUBPAGE_SYNC   : strcpy_P(s, PSTR("<span class=\"l-xcj\"></span>")); break;//Sync
+      case SUBPAGE_TIME   : strcpy_P(s, PSTR("<span class=\"l-xck\"></span>")); break;//Time
+      case SUBPAGE_SEC    : strcpy_P(s, PSTR("<span class=\"l-xcl\"></span>")); if (doReboot) strcpy_P(s2, PSTR("<span class=\"l-xcz\"></span>")); break;//Security  Rebooting, please wait ~10 seconds...
+      case SUBPAGE_DMX    : strcpy_P(s, PSTR("<span class=\"l-xcx\"></span>")); break;//DMX
+      case SUBPAGE_UM     : strcpy_P(s, PSTR("<span class=\"l-xcc\"></span>")); break;//Usermods
+      case SUBPAGE_2D     : strcpy_P(s, PSTR("<span class=\"l-xcv\"></span>")); break;//2D
+      case SUBPAGE_LANG   : strcpy_P(s, PSTR("<span class=\"l-xcb\"></span>")); break;//Language
+      case SUBPAGE_PINREQ : strcpy_P(s, correctPIN ? PSTR("<span class=\"l-xcn\"></span>") : PSTR("<span class=\"l-xcm\"></span>")); break;//PIN accepted  PIN rejected
     }
 
-    if (subPage != SUBPAGE_PINREQ) strcat_P(s, PSTR(" settings saved."));
+    if (subPage != SUBPAGE_PINREQ) strcat_P(s, PSTR(" <span class=\"l-xcw\"></span>"));// settings saved.
 
     if (subPage == SUBPAGE_PINREQ && correctPIN) {
       subPage = originalSubPage; // on correct PIN load settings page the user intended
@@ -641,13 +657,14 @@ void serveSettings(AsyncWebServerRequest* request, bool post)
     case SUBPAGE_LOCK    : {
       correctPIN = !strlen(settingsPIN); // lock if a pin is set
       createEditHandler(correctPIN);
-      serveMessage(request, 200, strlen(settingsPIN) > 0 ? PSTR("Settings locked") : PSTR("No PIN set"), FPSTR(s_redirecting), 1);
+      serveMessage(request, 200, strlen(settingsPIN) > 0 ? PSTR("<span class=\"l-xxf\"></span>") : PSTR("<span class=\"l-xxg\"></span>"), FPSTR(s_redirecting), 1);//Settings locked No PIN set
       return;
     }
     case SUBPAGE_PINREQ  : response = request->beginResponse_P(401, "text/html", PAGE_settings_pin,  PAGE_settings_pin_length);  break;
     case SUBPAGE_CSS     : response = request->beginResponse_P(200, "text/css",  PAGE_settingsCss,   PAGE_settingsCss_length);   break;
     case SUBPAGE_JS      : serveSettingsJS(request); return;
     case SUBPAGE_WELCOME : response = request->beginResponse_P(200, "text/html", PAGE_welcome,       PAGE_welcome_length);       break;
+    case SUBPAGE_LANG    : response = request->beginResponse_P(200, "text/html", PAGE_settings_lang, PAGE_settings_lang_length); break;
     default:  response = request->beginResponse_P(200, "text/html", PAGE_settings,      PAGE_settings_length);      break;
   }
   response->addHeader(FPSTR(s_content_enc),"gzip");

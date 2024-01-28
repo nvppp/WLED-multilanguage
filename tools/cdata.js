@@ -326,6 +326,12 @@ writeChunks(
       name: "PAGE_settings_pin",
       method: "gzip",
       filter: "html-minify"
+    },
+    {
+      file: "settings_lang.htm",
+      name: "PAGE_settings_lang",
+      method: "gzip",
+      filter: "html-minify"
     }
   ],
   "wled00/html_settings.h"
@@ -415,6 +421,16 @@ const char PAGE_dmxmap[] PROGMEM = R"=====()=====";
     {
       file: "rangetouch.js",
       name: "rangetouchJs",
+      method: "gzip"
+    },
+    {
+      file: "language.js",
+      name: "languageJs",
+      method: "gzip"
+    },
+    {
+      file: "index.js",
+      name: "indexJs",
       method: "gzip"
     }
   ],

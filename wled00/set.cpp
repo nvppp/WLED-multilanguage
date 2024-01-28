@@ -13,8 +13,8 @@ void handleSettingsSet(AsyncWebServerRequest *request, byte subPage)
     return;
   }
 
-  //0: menu 1: wifi 2: leds 3: ui 4: sync 5: time 6: sec 7: DMX 8: usermods 9: N/A 10: 2D
-  if (subPage < 1 || subPage > 10 || !correctPIN) return;
+  //0: menu 1: wifi 2: leds 3: ui 4: sync 5: time 6: sec 7: DMX 8: usermods 9: N/A 10: 2D 11: language
+  if (subPage < 1 || subPage > 11 || !correctPIN) return;
 
   //WIFI SETTINGS
   if (subPage == SUBPAGE_WIFI)
@@ -469,7 +469,7 @@ void handleSettingsSet(AsyncWebServerRequest *request, byte subPage)
       #ifdef WLED_ADD_EEPROM_SUPPORT
       clearEEPROM();
       #endif
-      serveMessage(request, 200, F("All Settings erased."), F("Connect to WLED-AP to setup again"),255);
+      serveMessage(request, 200, F("<span class=\"l-xvq\"></span>"), F("<span class=\"l-xvw\"></span>"),255);// All Settings erased. Connect to WLED-AP to setup again
       doReboot = true; // may reboot immediately on dual-core system (race condition) which is desireable in this case
     }
 

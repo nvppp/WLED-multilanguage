@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-	<meta charset="utf-8">
-	<title>Misc Settings</title>
-	<script>
+	<title class="l-psiw">Misc Settings</title>
+	<script type="module">import {changeLang} from "/language.js";changeLang();</script>
+	<script type="module" async>
+		import {langArr, lL} from "/language.js";
+		let lA=langArr;
+
 		var d = document;
 		var loc = false, locip, locproto = "http:";
 		function H() { window.open("https://kno.wled.ge/features/settings/#security-settings"); }
@@ -28,31 +32,54 @@
 			});
 			// error event
 			scE.addEventListener("error", (ev) => {
-				console.log("Error on loading file", ev);
-				alert("Loading of configuration script failed.\nIncomplete page data!");
+				console.log(lA["pzq"][lL], ev);
+				alert(lA["pzw"][lL]);
 			});
 		}
 		var timeout;
-		function showToast(text, error = false)
-		{
+		function showToast(text, error = false) {
 			var x = gId("toast");
-			x.innerHTML = text;
+			console.log('ХРАНИЛИЩЕ оповещение : ' + text);
+			console.log('ХРАНИЛИЩЕ оповещение текст: ' + lA[text][lL]);
+			x.innerHTML = lA[text][lL];
+			//x.innerHTML = text;
 			x.classList.add(error ? "error":"show");
 			clearTimeout(timeout);
 			x.style.animation = 'none';
 			timeout = setTimeout(function(){ x.classList.remove("show"); }, 2900);
 		}
 		function uploadFile(fO,name) {
-			var req = new XMLHttpRequest();
-			req.addEventListener('load', function(){showToast(this.responseText,this.status >= 400)});
-			req.addEventListener('error', function(e){showToast(e.stack,true);});
-			req.open("POST", getURL("/upload"));
-			var formData = new FormData();
-			formData.append("data", fO.files[0], name);
-			req.send(formData);
-			fO.value = '';
-			return false;
+			if (typeof window.FileReader !== 'function') {
+				alert(lA["plzk"][lL]);
+				return;
+			}
+			if (!fO.files) {
+				alert(lA["plzl"][lL]);
+			} else if (!fO.files[0]) {
+				alert(lA["plzz"][lL]);
+			} else {
+				var req = new XMLHttpRequest();
+				req.addEventListener('load', function(){showToast(this.responseText,this.status >= 400)});
+				req.addEventListener('error', function(e){showToast(e.stack,true);});
+				req.open("POST", "/upload");
+				var formData = new FormData();
+				formData.append("data", fO.files[0], name);
+				req.send(formData);
+				fO.value = '';
+				return false;
+			}
 		}
+		// function uploadFile(fO,name) {
+		// 	var req = new XMLHttpRequest();
+		// 	req.addEventListener('load', function(){showToast(this.responseText,this.status >= 400)});
+		// 	req.addEventListener('error', function(e){showToast(e.stack,true);});
+		// 	req.open("POST", getURL("/upload"));
+		// 	var formData = new FormData();
+		// 	formData.append("data", fO.files[0], name);
+		// 	req.send(formData);
+		// 	fO.value = '';
+		// 	return false;
+		// }
 		function checkNum(o) {
 			const specialkeys = ["Backspace", "Tab", "Enter", "Shift", "Control", "Alt", "Pause", "CapsLock", "Escape", "Space", "PageUp", "PageDown", "End", "Home", "ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown", "Insert", "Delete"];
 			// true if key is a number or a special key
@@ -69,7 +96,7 @@
 				loc = true;
 				locip = localStorage.getItem('locIp');
 				if (!locip) {
-					locip = prompt("File Mode. Please enter WLED IP!");
+					locip = prompt(lA["pze"][lL]);
 					localStorage.setItem('locIp', locip);
 				}
 			} else {
@@ -92,53 +119,65 @@
 		function getURL(path) {
 			return (loc ? locproto + "//" + locip : "") + path;
 		}
+		window.H = H;
+		window.B = B;
+		window.U = U;
+		window.gId = gId;
+		window.isObj = isObj;//не исп
+		window.loadJS = loadJS;
+		window.showToast = showToast;
+		window.uploadFile = uploadFile;
+		window.checkNum = checkNum;
+		window.setBckFilename = setBckFilename;
+		window.S = S;
+		window.getURL = getURL;
+		window.d = d;
 	</script>
-	<style>
-		@import url("style.css");
-	</style>
+	<style>@import url("style.css");</style>
 </head>
-<body onload="S()">
+<body class="l_body" onload="S()">
 	<form id="form_s" name="Sf" method="post">
 		<div class="toprow">
-		<div class="helpB"><button type="button" onclick="H()">?</button></div>
-		<button type="button" onclick="B()">Back</button><button type="submit">Save</button><hr>
+			<div class="helpB"><button type="button" onclick="H()">?</button></div>
+			<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pls" type="submit"><!--Save--></button><hr>
 		</div>
-		<h2>Security & Update setup</h2>
-		Settings PIN: <input type="password" id="PIN" name="PIN" size="4" maxlength="4" minlength="4" onkeydown="checkNum(this)" pattern="[0-9]*" inputmode="numeric" title="Please enter a 4 digit number"><br>
-		<div class="warn">&#9888; Unencrypted transmission. Be prudent when selecting PIN, do NOT use your banking, door, SIM, etc. pin!</div><br>
-		Lock wireless (OTA) software update: <input type="checkbox" name="NO"><br>
-		Passphrase: <input type="password" name="OP" maxlength="32"><br>
-		To enable OTA, for security reasons you need to also enter the correct password!<br>
-		The password should be changed when OTA is enabled.<br>
-		<b>Disable OTA when not in use, otherwise an attacker can reflash device software!</b><br>
-		<i>Settings on this page are only changable if OTA lock is disabled!</i><br>
-		Deny access to WiFi settings if locked: <input type="checkbox" name="OW"><br><br>
-		Factory reset: <input type="checkbox" name="RS"><br>
-		All settings and presets will be erased.<br><br>
-		<div class="warn">&#9888; Unencrypted transmission. An attacker on the same network can intercept form data!</div>
+		<h2 class="l-psie"><!--Security & Update setup--></h2>
+		<span class="l-psir"><!--Settings PIN:--></span> <input type="password" id="PIN" name="PIN" size="4" maxlength="4" minlength="4" onkeydown="checkNum(this)" pattern="[0-9]*" inputmode="numeric" title="Please enter a 4 digit number"><br>
+		<div class="warn l-psit"><!--&#9888; Unencrypted transmission. Be prudent when selecting PIN, do NOT use your banking, door, SIM, etc. pin!--></div><br>
+		<span class="l-psiy"><!--Lock wireless (OTA) software update:--></span> <input type="checkbox" name="NO"><br>
+		<span class="l-psiu"><!--Passphrase:--></span> <input type="password" name="OP" maxlength="32"><br>
+		<span class="l-psii"><!--To enable OTA, for security reasons you need to also enter the correct password!<br>
+			The password should be changed when OTA is enabled.<br>
+			<b>Disable OTA when not in use, otherwise an attacker can reflash device software!</b>--></span><br>
+		<i class="l-psio"><!--Settings on this page are only changable if OTA lock is disabled!--></i><br>
+		<span class="l-psip"><!--Deny access to WiFi settings if locked:--></span> <input type="checkbox" name="OW"><br><br>
+		<span class="l-psia"><!--Factory reset:--></span> <input type="checkbox" name="RS"><br>
+		<span class="l-psis"><!--All settings and presets will be erased.--></span><br><br>
+		<div class="warn l-psid"><!--&#9888; Unencrypted transmission. An attacker on the same network can intercept form data!--></div>
 		<hr>
-		<h3>Software Update</h3>
-		<button type="button" onclick="U()">Manual OTA Update</button><br>
-		Enable ArduinoOTA: <input type="checkbox" name="AO">
+		<h3 class="l-psif"><!--Software Update--></h3>
+		<button class="l-psig" type="button" onclick="U()"><!--Manual OTA Update--></button><br>
+		<span class="l-psih"><!--Enable ArduinoOTA:--></span> <input type="checkbox" name="AO">
 		<hr>
-		<h3>Backup & Restore</h3>
-		<a class="btn lnk" id="bckcfg" href="/presets.json" download="presets">Backup presets</a><br>
-		<div>Restore presets<br><input type="file" name="data" accept=".json"> <button type="button" onclick="uploadFile(d.Sf.data,'/presets.json');">Upload</button><br></div><br>
-		<a class="btn lnk" id="bckpresets" href="/cfg.json" download="cfg">Backup configuration</a><br>
-		<div>Restore configuration<br><input type="file" name="data2" accept=".json"> <button type="button" onclick="uploadFile(d.Sf.data2,'/cfg.json');">Upload</button><br></div>
-		<div class="warn">&#9888; Restoring presets/configuration will OVERWRITE your current presets/configuration.<br>
-		Incorrect configuration may require a factory reset or re-flashing of your ESP.</div>
-		For security reasons, passwords are not backed up.
+		<h3 class="l-psij"><!--Backup & Restore--></h3>
+		<a class="btn lnk l-psik" id="bckcfg" href="/presets.json" download="presets"><!--Backup presets--></a><br>
+		<div><span class="l-psil"><!--Restore presets--></span><br><input type="file" name="data" accept=".json"> <button class="l-psiz" type="button" onclick="uploadFile(d.Sf.data,'/presets.json');"><!--Upload--></button><br></div><br>
+		<a class="btn lnk l-psix" id="bckpresets" href="/cfg.json" download="cfg"><!--Backup configuration--></a><br>
+		<div><span class="l-psic"><!--Restore configuration--></span><br><input type="file" name="data2" accept=".json"> <button class="l-psiz" type="button" onclick="uploadFile(d.Sf.data2,'/cfg.json');"><!--Upload--></button><br></div>
+		<div class="warn l-psiv"><!--&#9888; Restoring presets/configuration will OVERWRITE your current presets/configuration.<br>
+			Incorrect configuration may require a factory reset or re-flashing of your ESP.--></div>
+		<span class="l-psib"><!--For security reasons, passwords are not backed up.--></span>
 		<hr>
-		<h3>About</h3>
-		<a href="https://github.com/Aircoookie/WLED/" target="_blank">WLED</a> version ##VERSION##<!-- Autoreplaced from package.json --><br><br>
-		<a href="https://github.com/Aircoookie/WLED/wiki/Contributors-and-credits" target="_blank">Contributors, dependencies and special thanks</a><br>
-		A huge thank you to everyone who helped me create WLED!<br><br>
-		(c) 2016-2023 Christian Schwinne <br>
-		<i>Licensed under the <a href="https://github.com/Aircoookie/WLED/blob/master/LICENSE" target="_blank">MIT license</a></i><br><br>
-		Server message: <span class="sip"> Response error! </span><hr>
+		<h3 class="l-psin"><!--About--></h3>
+		<a href="https://github.com/Aircoookie/WLED/" target="_blank">WLED</a> <span class="l-psim"><!--version--></span> ##VERSION##<!-- Autoreplaced from package.json --><br><br>
+		<a class="l-pskq" href="https://github.com/Aircoookie/WLED/wiki/Contributors-and-credits" target="_blank"><!--Contributors, dependencies and special thanks--></a><br>
+		<span class="l-psiq"><!--A huge thank you to everyone who helped me create WLED!<br><br>
+			(c) 2016-2023 Christian Schwinne--></span> <br>
+		<i><span class="l-pskw"><!--Licensed under the--></span> <a href="https://github.com/Aircoookie/WLED/blob/master/LICENSE" target="_blank">MIT license</a></i><br><br>
+		<span class="l-pske"></span>
+		<span class="l-pskr"><!--Server message:--></span> <span class="sip"> <span class="l-pskt"><!--Response error!--></span></span> <hr>
 		<div id="toast"></div>
-		<button type="button" onclick="B()">Back</button><button type="submit">Save</button>
+		<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pls" type="submit"><!--Save--><!-- Autoreplaced from language.js --></button>
 	</form>
 </body>
 </html>

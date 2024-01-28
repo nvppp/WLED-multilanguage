@@ -1,3 +1,9 @@
+export {handleVisibilityChange,  sCol,  gId,  gEBCN,  isEmpty,  isObj,  isNumeric,  isRgbBlack,  rgbStr,  rgbBri,  setCSL,  applyCfg,  tglHex,  tglTheme,  tglLabels,  tglRgb,  cTheme,  loadBg,  loadSkinCSS,  getURL,  onLoad,  updateTablinks,  openTab,  showToast,  showErrorToast,  clearErrorToast,  getRuntimeStr,  inforow,  getLowestUnusedP,  checkUsed,  pName,  isPlaylist,  papiVal,  qlName,  cpBck,  presetError,  loadPresets,  loadPalettes,  loadFX,  loadFXData,  populateQL,  populatePresets,  parseInfo,  populateInfo,  populateSegments,  populateEffects,  populatePalettes,  redrawPalPrev,  genPalPrevCss,  generateListItemHtml,  btype,  bname,  populateNodes,  loadNodes,  updateTrail,  toggleBubble,  updateLen,  updatePA,  updateUI,  updateSelectedPalette,  updateSelectedFx,  displayRover,  cmpP,  makeWS,  readState,  setEffectParameters,  requestJson,  togglePower,  toggleNl,  toggleSync,  toggleLiveview,  toggleInfo,  toggleNodes,  makeSeg,  resetUtil,  makePlSel,  refreshPlE,  addPl,  delPl,  plePs,  pleDur,  pleTr,  plR,  makeP,  makePUtil,  makePlEntry,  makePlUtil,  resetPUtil,  tglCs,  tglSegn,  selSegAll,  selSegEx,  selSeg,  selGrp,  rptSeg,  setSeg,  delSeg,  setRev,  setRevY,  setMi,  setMiY,  setM12,  setSi,  setTp,  setGrp,  setSegPwr,  setSegBri,  tglFreeze,  setFX,  setPalette,  setBri,  setSpeed,  setIntensity,  setCustom,  setOption,  setLor,  setPreset,  saveP,  testPl,  stopPl,  delP,  selectSlot,  pC,  updatePSliders,  hexEnter,  segEnter,  fromHex,  setPicker,  fromH,  fromS,  fromV,  fromK,  fromRgb,  fromW,  setColor,  setBalance,  rmtTgl,	openGH,  cnfReset,  rSegs,  loadPalettesData,  getPalettesData,  search,  clean,  filterFx,  formatArr,  expand,  unfocusSliders,  unify,  hasIroClass,  lock,  move,  size,  togglePcMode,  mergeDeep
+}; // список экспортируемых переменных
+import {langArr, lL} from "/language.js";
+let lA=langArr;
+var y,x,nlFade,color;
+
 //page js
 var loc = false, locip, locproto = "http:";
 var isOn = false, nlA = false, isLv = false, isInfo = false, isNodes = false, syncSend = false, syncTglRecv = true;
@@ -22,7 +28,8 @@ var pN = "", pI = 0, pNum = 0;
 var pmt = 1, pmtLS = 0, pmtLast = 0;
 var lastinfo = {};
 var isM = false, mw = 0, mh=0;
-var ws, cpick, ranges, wsRpt=0;
+var ws, ranges, wsRpt=0;
+var cpick = window.cpick;
 var cfg = {
 	theme:{base:"dark", bg:{url:""}, alpha:{bg:0.6,tab:0.8}, color:{bg:""}},
 	comp :{colors:{picker: true, rgb: false, quick: true, hex: false},
@@ -209,7 +216,7 @@ function onLoad()
 		loc = true;
 		locip = localStorage.getItem('locIp');
 		if (!locip) {
-			locip = prompt("File Mode. Please enter WLED IP!");
+			locip = prompt(lA["zoq"][lL]);
 			localStorage.setItem('locIp', locip);
 		}
 	} else {
@@ -309,6 +316,7 @@ function showToast(text, error = false)
 	if (error) gId('connind').style.backgroundColor = "var(--c-r)";
 	var x = gId('toast');
 	//if (error) text += '<i class="icons btn-icon" style="transform:rotate(45deg);position:absolute;top:10px;right:0px;" onclick="clearErrorToast(100);">&#xe18a;</i>';
+	//x.innerHTML = lA[text][lL];
 	x.innerHTML = text;
 	x.classList.add(error ? 'error':'show');
 	clearTimeout(timeout);
@@ -319,7 +327,7 @@ function showToast(text, error = false)
 
 function showErrorToast()
 {
-	showToast('Connection to light failed!', true);
+	showToast(lA["zjw"][lL], true);
 }
 
 function clearErrorToast(n=5000)
@@ -340,12 +348,12 @@ function getRuntimeStr(rt)
 	var days = Math.floor(t/86400);
 	var hrs = Math.floor((t - days*86400)/3600);
 	var mins = Math.floor((t - days*86400 - hrs*3600)/60);
-	var str = days ? (days + " " + (days == 1 ? "day" : "days") + ", ") : "";
-	str += (hrs || days) ? (hrs + " " + (hrs == 1 ? "hour" : "hours")) : "";
+	var str = days ? (days + " " + (days === 1 ? lA["zpq"][lL] : lA["zpw"][lL]) + ", ") : "";
+	str += (hrs || days) ? (hrs + " " + (hrs === 1 ? lA["zpe"][lL] : lA["zpr"][lL])) : "";
 	if (!days && hrs) str += ", ";
-	if (t > 59 && !days) str += mins + " min";
+	if (t > 59 && !days) str += mins + " "+lA["zpt"][lL];
 	if (t < 3600 && t > 59) str += ", ";
-	if (t < 3600) str += (t - mins*60) + " sec";
+	if (t < 3600) str += (t - mins*60) + " "+lA["zpy"][lL];
 	return str;
 }
 
@@ -366,14 +374,14 @@ function checkUsed(i)
 {
 	var id = gId(`p${i}id`).value;
 	if (pJson[id] && (i == 0 || id != i))
-		gId(`p${i}warn`).innerHTML = `&#9888; Overwriting ${pName(id)}!`;
+		gId(`p${i}warn`).innerHTML = `&#9888; ${lA["zhy"][lL]} ${pName(id)}!`;
 	else
-		gId(`p${i}warn`).innerHTML = id>250?"&#9888; ID must be 250 or less.":"";
+		gId(`p${i}warn`).innerHTML = id>250?"&#9888; "+lA["zju"][lL]:"";
 }
 
 function pName(i)
 {
-	var n = "Preset " + i;
+	var n = "Preset111111111111111111 " + i;
 	if (pJson && pJson[i] && pJson[i].n) n = pJson[i].n;
 	return n;
 }
@@ -405,7 +413,7 @@ function cpBck()
 	copyText.select();
 	copyText.setSelectionRange(0, 999999);
 	d.execCommand("copy");
-	showToast("Copied to clipboard!");
+	showToast(lA["zmq"][lL]);
 }
 
 function presetError(empty)
@@ -418,19 +426,18 @@ function presetError(empty)
 
 	var cn = `<div class="pres c" ${empty?'style="padding:8px;margin-top: 16px;"':'onclick="pmtLast=0;loadPresets();" style="cursor:pointer;padding:8px;margin-top: 16px;"'}>`;
 	if (empty)
-		cn += `You have no presets yet!`;
+		cn += lA["zhq"][lL];
 	else
-		cn += `Sorry, there was an issue loading your presets!`;
+		cn += lA["zhw"][lL];
 
 	if (hasBackup) {
 		cn += `<br><br>`;
 		if (empty)
-			cn += `However, there is backup preset data of a previous installation available.<br>
-			(Saving a preset will hide this and overwrite the backup)`;
+			cn += lA["zhe"][lL];
 		else
-			cn += `Here is a backup of the last known good state:`;
+			cn += lA["zhr"][lL];
 		cn += `<textarea id="bck"></textarea><br>
-			<button class="btn" onclick="cpBck()">Copy to clipboard</button>`;
+			<button class="btn" onclick="cpBck()">${lA["zht"][lL]}</button>`;
 	}
 	cn += `</div>`;
 	gId('pcont').innerHTML = cn;
@@ -550,7 +557,7 @@ function populateQL()
 	var cn = "";
 	if (pQL.length > 0) {
 		pQL.sort((a,b) => (a[0]>b[0]));
-		cn += `<p class="labels hd">Quick load</p>`;
+		cn += `<p class="labels hd">${lA["zlq"][lL]}</p>`;
 		for (var key of (pQL||[])) {
 			cn += `<button class="btn btn-xs psts" id="p${key[0]}qlb" title="${key[2]?key[2]:''}" onclick="setPreset(${key[0]});">${key[1]}</button>`;
 		}
@@ -658,7 +665,7 @@ function populateInfo(i)
 	var heap = i.freeheap/1024;
 	heap = heap.toFixed(1);
 	var pwr = i.leds.pwr;
-	var pwru = "Not calculated";
+	var pwru = lA["zqm"][lL];
 	if (pwr > 1000) {pwr /= 1000; pwr = pwr.toFixed((pwr > 10) ? 0 : 1); pwru = pwr + " A";}
 	else if (pwr > 0) {pwr = 50 * Math.round(pwr/50); pwru = pwr + " mA";}
 	var urows="";
@@ -679,17 +686,17 @@ function populateInfo(i)
 ${urows}
 ${urows===""?'':'<tr><td colspan=2><hr style="height:1px;border-width:0;color:gray;background-color:gray"></td></tr>'}
 ${i.opt&0x100?inforow("Debug","<button class=\"btn btn-xs\" onclick=\"requestJson({'debug':"+(i.opt&0x0080?"false":"true")+"});\"><i class=\"icons "+(i.opt&0x0080?"on":"off")+"\">&#xe08f;</i></button>"):''}
-${inforow("Build",i.vid)}
-${inforow("Signal strength",i.wifi.signal +"% ("+ i.wifi.rssi, " dBm)")}
-${inforow("Uptime",getRuntimeStr(i.uptime))}
-${inforow("Time",i.time)}
-${inforow("Free heap",heap," kB")}
-${i.psram?inforow("Free PSRAM",(i.psram/1024).toFixed(1)," kB"):""}
-${inforow("Estimated current",pwru)}
-${inforow("Average FPS",i.leds.fps)}
-${inforow("MAC address",i.mac)}
-${inforow("Filesystem",i.fs.u + "/" + i.fs.t + " kB (" +Math.round(i.fs.u*100/i.fs.t) + "%)")}
-${inforow("Environment",i.arch + " " + i.core + " (" + i.lwip + ")")}
+${inforow(lA["zqq"][lL],i.vid)}
+${inforow(lA["zqw"][lL],i.wifi.signal +"% ("+ i.wifi.rssi, " dBm)")}
+${inforow(lA["zqe"][lL],getRuntimeStr(i.uptime))}
+${inforow(lA["zqr"][lL],i.time)}
+${inforow(lA["zqt"][lL],heap," kB")}
+${i.psram?inforow(lA["zqy"][lL],(i.psram/1024).toFixed(1)," kB"):""}
+${inforow(lA["zqu"][lL],pwru)}
+${inforow(lA["zqi"][lL],i.leds.fps)}
+${inforow(lA["zqo"][lL],i.mac)}
+${inforow(lA["zqp"][lL],i.fs.u + "/" + i.fs.t + " kB (" +Math.round(i.fs.u*100/i.fs.t) + "%)")}
+${inforow(lA["zqa"][lL],i.arch + " " + i.core + " (" + i.lwip + ")")}
 </table>`;
 	gId('kv').innerHTML = cn;
 	//  update all sliders in Info
@@ -735,25 +742,25 @@ function populateSegments(s)
 		let staY = inst.startY;
 		let stoY = inst.stopY;
 		let isMSeg = isM && staX<mw*mh; // 2D matrix segment
-		let rvXck = `<label class="check revchkl">Reverse ${isM?'':'direction'}<input type="checkbox" id="seg${i}rev" onchange="setRev(${i})" ${inst.rev?"checked":""}><span class="checkmark"></span></label>`;
-		let miXck = `<label class="check revchkl">Mirror<input type="checkbox" id="seg${i}mi" onchange="setMi(${i})" ${inst.mi?"checked":""}><span class="checkmark"></span></label>`;
+		let rvXck = `<label class="check revchkl">${lA["zag"][lL]}1 ${isM?'':lA["zas"][lL]}<input type="checkbox" id="seg${i}rev" onchange="setRev(${i})" ${inst.rev?"checked":""}><span class="checkmark"></span></label>`;
+		let miXck = `<label class="check revchkl">${lA["zad"][lL]}1<input type="checkbox" id="seg${i}mi" onchange="setMi(${i})" ${inst.mi?"checked":""}><span class="checkmark"></span></label>`;
 		let rvYck = "", miYck ="";
 		if (isMSeg) {
-			rvYck = `<label class="check revchkl">Reverse<input type="checkbox" id="seg${i}rY" onchange="setRevY(${i})" ${inst.rY?"checked":""}><span class="checkmark"></span></label>`;
-			miYck = `<label class="check revchkl">Mirror<input type="checkbox" id="seg${i}mY" onchange="setMiY(${i})" ${inst.mY?"checked":""}><span class="checkmark"></span></label>`;
+			rvYck = `<label class="check revchkl">${lA["zag"][lL]}2<input type="checkbox" id="seg${i}rY" onchange="setRevY(${i})" ${inst.rY?"checked":""}><span class="checkmark"></span></label>`;
+			miYck = `<label class="check revchkl">${lA["zad"][lL]}2<input type="checkbox" id="seg${i}mY" onchange="setMiY(${i})" ${inst.mY?"checked":""}><span class="checkmark"></span></label>`;
 		}
-		let map2D = `<div id="seg${i}map2D" data-map="map2D" class="lbl-s hide">Expand 1D FX<br>`+
+		let map2D = `<div id="seg${i}map2D" data-map="map2D" class="lbl-s hide">${lA["zaz"][lL]} 1D FX1<br>`+
 						`<div class="sel-p"><select class="sel-p" id="seg${i}m12" onchange="setM12(${i})">`+
-							`<option value="0" ${inst.m12==0?' selected':''}>Pixels</option>`+
-							`<option value="1" ${inst.m12==1?' selected':''}>Bar</option>`+
-							`<option value="2" ${inst.m12==2?' selected':''}>Arc</option>`+
-							`<option value="3" ${inst.m12==3?' selected':''}>Corner</option>`+
+							`<option value="0" ${inst.m12==0?' selected':''}>Pixels1</option>`+
+							`<option value="1" ${inst.m12==1?' selected':''}>Bar1</option>`+
+							`<option value="2" ${inst.m12==2?' selected':''}>Arc1</option>`+
+							`<option value="3" ${inst.m12==3?' selected':''}>Corner1</option>`+
 						`</select></div>`+
 					`</div>`;
-		let sndSim = `<div data-snd="si" class="lbl-s hide">Sound sim<br>`+
+		let sndSim = `<div data-snd="si" class="lbl-s hide">${lA["zal"][lL]}1<br>`+
 						`<div class="sel-p"><select class="sel-p" id="seg${i}si" onchange="setSi(${i})">`+
-							`<option value="0" ${inst.si==0?' selected':''}>BeatSin</option>`+
-							`<option value="1" ${inst.si==1?' selected':''}>WeWillRockYou</option>`+
+							`<option value="0" ${inst.si==0?' selected':''}>BeatSin1</option>`+
+							`<option value="1" ${inst.si==1?' selected':''}>WeWillRockYou1</option>`+
 						`</select></div>`+
 					`</div>`;
 		cn += `<div class="seg lstI ${i==s.mainseg ? 'selected' : ''} ${exp ? "expanded":""}" id="seg${i}" data-set="${inst.set}">`+
@@ -763,7 +770,7 @@ function populateSegments(s)
 				`</label>`+
 				`<div class="segname" onclick="selSegEx(${i})">`+
 					`<i class="icons e-icon frz" id="seg${i}frz" onclick="event.preventDefault();tglFreeze(${i});">&#x${inst.frz ? (li.live && li.liveseg==i?'e410':'e0e8') : 'e325'};</i>`+
-					(inst.n ? inst.n : "Segment "+i) +
+					(inst.n ? inst.n : lA["zaq"][lL]+" "+i) +
 					`<div class="pop hide" onclick="event.preventDefault();event.stopPropagation();">`+
 						`<i class="icons g-icon" style="color:${cG};" onclick="this.nextElementSibling.classList.toggle('hide');">&#x278${String.fromCharCode(inst.set+"A".charCodeAt(0))};</i>`+
 						`<div class="pop-c hide"><span style="color:var(--c-f);" onclick="setGrp(${i},0);">&#x278A;</span><span style="color:var(--c-r);" onclick="setGrp(${i},1);">&#x278B;</span><span style="color:var(--c-g);" onclick="setGrp(${i},2);">&#x278C;</span><span style="color:var(--c-l);" onclick="setGrp(${i},3);">&#x278D;</span></div>`+
@@ -773,27 +780,27 @@ function populateSegments(s)
 				`<i class="icons e-icon flr" id="sege${i}" onclick="expand(${i})">&#xe395;</i>`+
 				(cfg.comp.segpwr ? segp : '') +
 				`<div class="segin" id="seg${i}in">`+
-					`<input type="text" class="ptxt" id="seg${i}t" autocomplete="off" maxlength=${li.arch=="esp8266"?32:64} value="${inst.n?inst.n:""}" placeholder="Enter name..."/>`+
+					`<input type="text" class="ptxt" id="seg${i}t" autocomplete="off" maxlength=${li.arch=="esp8266"?32:64} value="${inst.n?inst.n:""}" placeholder="${lA["zaw"][lL]}"/>`+
 					`<table class="infot segt">`+
 					`<tr>`+
-						`<td>${isMSeg?'Start X':'Start LED'}</td>`+
-						`<td>${isMSeg?(cfg.comp.seglen?"Width":"Stop X"):(cfg.comp.seglen?"LED count":"Stop LED")}</td>`+
-						`<td>${isMSeg?'':'Offset'}</td>`+
+						`<td>${isMSeg?lA["zaj"][lL]+' X':lA["zae"][lL]}</td>`+
+						`<td>${isMSeg?(cfg.comp.seglen?"Width":lA["zak"][lL]+" X"):(cfg.comp.seglen?"LED count":lA["zar"][lL])}</td>`+
+						`<td>${isMSeg?'':lA["zat"][lL]}</td>`+
 					`</tr>`+
 					`<tr>`+
 						`<td><input class="segn" id="seg${i}s" type="number" min="0" max="${(isMSeg?mw:ledCount)-1}" value="${staX}" oninput="updateLen(${i})" onkeydown="segEnter(${i})"></td>`+
 						`<td><input class="segn" id="seg${i}e" type="number" min="0" max="${(isMSeg?mw:ledCount)}" value="${stoX-(cfg.comp.seglen?staX:0)}" oninput="updateLen(${i})" onkeydown="segEnter(${i})"></td>`+
 						`<td ${isMSeg?'style="text-align:revert;"':''}>${isMSeg?miXck+'<br>'+rvXck:''}<input class="segn ${isMSeg?'hide':''}" id="seg${i}of" type="number" value="${inst.of}" oninput="updateLen(${i})"></td>`+
 					`</tr>`+
-					(isMSeg ? '<tr><td>Start Y</td><td>'+(cfg.comp.seglen?'Height':'Stop Y')+'</td><td></td></tr>'+
+					(isMSeg ? '<tr><td>'+lA["zaj"][lL]+' Y</td><td>'+(cfg.comp.seglen?'Height':lA["zak"][lL]+' Y')+'</td><td></td></tr>'+
 					'<tr>'+
 						'<td><input class="segn" id="seg'+i+'sY" type="number" min="0" max="'+(mh-1)+'" value="'+staY+'" oninput="updateLen('+i+')" onkeydown="segEnter('+i+')"></td>'+
 						'<td><input class="segn" id="seg'+i+'eY" type="number" min="0" max="'+mh+'" value="'+(stoY-(cfg.comp.seglen?staY:0))+'" oninput="updateLen('+i+')" onkeydown="segEnter('+i+')"></td>'+
 						'<td style="text-align:revert;">'+miYck+'<br>'+rvYck+'</td>'+
 					'</tr>' : '') +
 					`<tr>`+
-						`<td>Grouping</td>`+
-						`<td>Spacing</td>`+
+						`<td>${lA["zay"][lL]}</td>`+
+						`<td>${lA["zau"][lL]}</td>`+
 						`<td></td>`+
 					`</tr>`+
 					`<tr>`+
@@ -807,14 +814,14 @@ function populateSegments(s)
 					(isMSeg&&stoY-staY>1&&stoX-staX>1 ? map2D : '') +
 					(s.AudioReactive && s.AudioReactive.on ? "" : sndSim) +
 					`<label class="check revchkl" id="seg${i}lbtm">`+
-						(isMSeg?'Transpose':'Mirror effect') + (isMSeg ?
+						(isMSeg?lA["zah"][lL]:lA["zap"][lL]) + (isMSeg ?
 						'<input type="checkbox" id="seg'+i+'tp" onchange="setTp('+i+')" '+(inst.tp?"checked":"")+'>':
 						'<input type="checkbox" id="seg'+i+'mi" onchange="setMi('+i+')" '+(inst.mi?"checked":"")+'>') +
 						`<span class="checkmark"></span>`+
 					`</label>`+
 					`<div class="del">`+
-						`<button class="btn btn-xs" id="segr${i}" title="Repeat until end" onclick="rptSeg(${i})"><i class="icons btn-icon">&#xe22d;</i></button>`+
-						`<button class="btn btn-xs" id="segd${i}" title="Delete" onclick="delSeg(${i})"><i class="icons btn-icon">&#xe037;</i></button>`+
+						`<button class="btn btn-xs" id="segr${i}" title="${lA["zao"][lL]}" onclick="rptSeg(${i})"><i class="icons btn-icon">&#xe22d;</i></button>`+
+						`<button class="btn btn-xs" id="segd${i}" title="${lA["zai"][lL]}" onclick="delSeg(${i})"><i class="icons btn-icon">&#xe037;</i></button>`+
 					`</div>`+
 				`</div>`+
 				(cfg.comp.segpwr ? '' : segp) +
@@ -1041,10 +1048,10 @@ function populateNodes(i,n)
 			}
 		}
 	}
-	if (i.ndc < 0) cn += `Instance List is disabled.`;
-	else if (nnodes == 0) cn += `No other instances found.`;
+	if (i.ndc < 0) cn += lA["zqd"][lL];
+	else if (nnodes == 0) cn += lA["zqf"][lL];
 	cn += `<table>
-	${inforow("Current instance:",i.name)}
+	${inforow(lA["zqg"][lL],i.name)}
 	${urows}
 	</table>`;
 	gId('kn').innerHTML = cn;
@@ -1056,7 +1063,7 @@ function loadNodes()
 		method: 'get'
 	})
 	.then((res)=>{
-		if (!res.ok) showToast('Could not load Node list!', true);
+		if (!res.ok) showToast(lA["zcq"][lL], true);
 		return res.json();
 	})
 	.then((json)=>{
@@ -1396,7 +1403,7 @@ function readState(s,command=false)
 		hasCCT   = !!(lc & 0x04);
 	}
 	if (!i) {
-		showToast('No Segments!', true);
+		showToast(lA["zxq"][lL], true);
 		updateUI();
 		return true;
 	}
@@ -1427,22 +1434,22 @@ function readState(s,command=false)
 	  var errstr = "";
 	  switch (s.error) {
 		case 10:
-		  errstr = "Could not mount filesystem!";
+		  errstr = lA["zxw"][lL];
 		  break;
 		case 11:
-		  errstr = "Not enough space to save preset!";
+		  errstr = lA["zxe"][lL];
 		  break;
 		case 12:
-		  errstr = "Preset not found.";
+		  errstr = lA["zxr"][lL];
 		  break;
 		case 13:
-		  errstr = "Missing ir.json.";
+		  errstr = lA["zxt"][lL];
 		  break;
 		case 19:
-		  errstr = "A filesystem error has occured.";
+		  errstr = lA["zxy"][lL];
 		  break;
 		}
-	  showToast('Error ' + s.error + ": " + errstr, true);
+	  showToast(lA["zxu"][lL]+' ' + s.error + ": " + errstr, true);
 	}
 
 	selectedPal = i.pal;
@@ -1491,9 +1498,9 @@ function setEffectParameters(idx)
 		// if (not controlDefined and for AC speed or intensity and for SR all sliders) or slider has a value
 		if ((!controlDefined && i < ((idx<128)?2:nSliders)) || (slOnOff.length>i && slOnOff[i] != "")) {
 			if (slOnOff.length>i && slOnOff[i]!="!") label.innerHTML = slOnOff[i];
-			else if (i==0)                           label.innerHTML = "Effect speed";
-			else if (i==1)                           label.innerHTML = "Effect intensity";
-			else                                     label.innerHTML = "Custom" + (i-1);
+			else if (i==0)                           label.innerHTML = lA["zgq"][lL];
+			else if (i==1)                           label.innerHTML = lA["zgw"][lL];
+			else                                     label.innerHTML = lA["zge"][lL] + (i-1);
 			slider.classList.remove('hide');
 		} else {
 			slider.classList.add('hide');
@@ -1572,10 +1579,10 @@ function setEffectParameters(idx)
 			paOnOff[0] = paOnOff[0].substring(0,dPos);
 		}
 		if (paOnOff.length>0 && paOnOff[0] != "!") pall.innerHTML = paOnOff[0];
-		else                                       pall.innerHTML = '<i class="icons sel-icon" onclick="tglHex()">&#xe2b3;</i> Color palette';
+		else                                       pall.innerHTML = '<i class="icons sel-icon" onclick="tglHex()">&#xe2b3;</i> '+lA["zqc"][lL];
 	} else {
 		// disable palette list
-		pall.innerHTML = '<i class="icons sel-icon" onclick="tglHex()">&#xe2b3;</i> Color palette not used';
+		pall.innerHTML = '<i class="icons sel-icon" onclick="tglHex()">&#xe2b3;</i> '+lA["zqv"][lL];
 		palw.style.display = "none";
 	}
 	// not all color selectors shown, hide palettes created from color selectors
@@ -1634,7 +1641,7 @@ function requestJson(command=null)
 		lastUpdate = new Date();
 		clearErrorToast(3000);
 		gId('connind').style.backgroundColor = "var(--c-g)";
-		if (!json) { showToast('Empty response', true); return; }
+		if (!json) { showToast(lA["zjq"][lL], true); return; }
 		if (json.success) return;
 		if (json.info) {
 			let i = json.info;
@@ -1676,9 +1683,9 @@ function toggleNl()
 	nlA = !nlA;
 	if (nlA)
 	{
-		showToast(`Timer active. Your light will turn ${nlTar > 0 ? "on":"off"} ${nlMode ? "over":"after"} ${nlDur} minutes.`);
+		showToast(lA["ztq"][lL]+` ${nlTar > 0 ? lA["ztw"][lL]:lA["zte"][lL]} ${nlMode ? lA["ztr"][lL]:lA["ztt"][lL]} ${nlDur} `+lA["zty"][lL]);
 	} else {
-		showToast('Timer deactivated.');
+		showToast(lA["ztu"][lL]);
 	}
 	var obj = {"nl": {"on": nlA}};
 	requestJson(obj);
@@ -1687,8 +1694,8 @@ function toggleNl()
 function toggleSync()
 {
 	syncSend = !syncSend;
-	if (syncSend) showToast('Other lights in the network will now sync to this one.');
-	else showToast('This light and other lights in the network will no longer sync.');
+	if (syncSend) showToast(lA["zqj"][lL]);
+	else showToast(lA["zqk"][lL]);
 	var obj = {"udpn": {"send": syncSend}};
 	if (syncTglRecv) obj.udpn.recv = syncSend;
 	requestJson(obj);
@@ -1756,25 +1763,25 @@ function makeSeg()
 	});
 	var cn = `<div class="seg lstI expanded">`+
 		`<div class="segin">`+
-			`<input type="text" id="seg${lu}t" autocomplete="off" maxlength=32 value="" placeholder="New segment ${lu}"/>`+
+			`<input type="text" id="seg${lu}t" autocomplete="off" maxlength=32 value="" placeholder="${lA["zfq"][lL]} ${lu}"/>`+
 			`<table class="segt">`+
 				`<tr>`+
-					`<td width="38%">${isM?'Start X':'Start LED'}</td>`+
-					`<td width="38%">${isM?(cfg.comp.seglen?"Width":"Stop X"):(cfg.comp.seglen?"LED count":"Stop LED")}</td>`+
+					`<td width="38%">${isM?lA["zaj"][lL]+' X':lA["zae"][lL]}</td>`+
+					`<td width="38%">${isM?(cfg.comp.seglen?"Width":lA["zak"][lL]+" X"):(cfg.comp.seglen?"LED count111111111111111111111111111":lA["zar"][lL])}</td>`+
 				`</tr>`+
 				`<tr>`+
 					`<td><input class="segn" id="seg${lu}s" type="number" min="0" max="${isM?mw-1:ledCount-1}" value="${ns}" oninput="updateLen(${lu})" onkeydown="segEnter(${lu})"></td>`+
 					`<td><input class="segn" id="seg${lu}e" type="number" min="0" max="${ct}" value="${ct}" oninput="updateLen(${lu})" onkeydown="segEnter(${lu})"></td>`+
 					`<td><button class="btn btn-xs" onclick="setSeg(${lu});"><i class="icons bth-icon" id="segc${lu}">&#xe390;</i></button></td>`+
 				`</tr>`+
-				`<tr id="mkSYH" class="${isM?"":"hide"}"><td>Start Y</td><td>${cfg.comp.seglen?'Height':'Stop Y'}</td></tr>`+
+				`<tr id="mkSYH" class="${isM?"":"hide"}"><td>${lA["zaj"][lL]} Y</td><td>${cfg.comp.seglen?'Height':lA["zak"][lL]+' Y'}</td></tr>`+
 				`<tr id="mkSYD" class="${isM?"":"hide"}">`+
 					`<td><input class="segn" id="seg${lu}sY" type="number" min="0" max="${mh-1}" value="0" oninput="updateLen(${lu})" onkeydown="segEnter(${lu})"></td>`+
 					`<td><input class="segn" id="seg${lu}eY" type="number" min="0" max="${mh}" value="${isM?mh:1}" oninput="updateLen(${lu})" onkeydown="segEnter(${lu})"></td>`+
 				`</tr>`+
 			`</table>`+
 			`<div class="h" id="seg${lu}len">${ledCount - ns} LEDs</div>`+
-			`<div class="c"><button class="btn btn-p" onclick="resetUtil()">Cancel</button></div>`+
+			`<div class="c"><button class="btn btn-p" onclick="resetUtil()">${lA["zfw"][lL]}</button></div>`+
 		`</div>`+
 	`</div>`;
 	gId('segutil').innerHTML = cn;
@@ -1784,7 +1791,7 @@ function resetUtil(off=false)
 {
 	gId('segutil').innerHTML = `<div class="seg btn btn-s${off?' off':''}" style="padding:0;">`
 	+ '<label class="check schkl"><input type="checkbox" id="selall" onchange="selSegAll(this)"><span class="checkmark"></span></label>'
-	+ `<div class="segname" ${off?'':'onclick="makeSeg()"'}><i class="icons btn-icon">&#xe18a;</i>Add segment</div>`
+	+ `<div class="segname" ${off?'':'onclick="makeSeg()"'}><i class="icons btn-icon">&#xe18a;</i>${lA["zdq"][lL]}</div>`
 	+ '<div class="pop hide" onclick="event.stopPropagation();">'
 	+ `<i class="icons g-icon" onclick="this.nextElementSibling.classList.toggle('hide');">&#xE34B;</i>`
 	+ '<div class="pop-c hide"><span style="color:var(--c-f);" onclick="selGrp(0);">&#x278A;</span><span style="color:var(--c-r);" onclick="selGrp(1);">&#x278B;</span><span style="color:var(--c-g);" onclick="selGrp(2);">&#x278C;</span><span style="color:var(--c-l);" onclick="selGrp(3);">&#x278D;</span></div>'
@@ -1797,7 +1804,7 @@ function makePlSel(el, incPl=false)
 	delete pJson["0"];	// remove filler preset
 	var arr = Object.entries(pJson);
 	for (var a of arr) {
-		var n = a[1].n ? a[1].n : "Preset " + a[0];
+		var n = a[1].n ? a[1].n : "Preset111111111111111111111111111111111 " + a[0];
 		if (cfg.comp.idsort) n = a[0] + ' ' + n;
 		if (!incPl && a[1].playlist && a[1].playlist.ps) continue; // remove playlists, sub-playlists not yet supported
 		plSelContent += `<option value="${a[0]}" ${a[0]==el?"selected":""}>${n}</option>`
@@ -1809,7 +1816,7 @@ function refreshPlE(p)
 {
 	var plEDiv = gId(`ple${p}`);
 	if (!plEDiv) return;
-	var content = "<div class=\"first c\">Playlist entries</div>";
+	var content = "<div class=\"first c\">"+lA["zzq"][lL]+"</div>";
 	for (var i = 0; i < plJson[p].ps.length; i++) {
 		content += makePlEntry(p,i);
 	}
@@ -1891,43 +1898,43 @@ function makeP(i,pl)
 		};
 		var rep = plJson[i].repeat ? plJson[i].repeat : 0;
 		content =
-`<div id="ple${i}" style="margin-top:10px;"></div><label class="check revchkl">Shuffle
+`<div id="ple${i}" style="margin-top:10px;"></div><label class="check revchkl">${lA["zkh"][lL]}
 	<input type="checkbox" id="pl${i}rtgl" onchange="plR(${i})" ${plJson[i].r||rep<0?"checked":""}>
 	<span class="checkmark"></span>
 </label>
-<label class="check revchkl">Repeat indefinitely
+<label class="check revchkl">${lA["zkj"][lL]}
 	<input type="checkbox" id="pl${i}rptgl" onchange="plR(${i})" ${rep>0?"":"checked"}>
 	<span class="checkmark"></span>
 </label>
 <div id="pl${i}o1" style="display:${rep>0?"block":"none"}">
-<div class="c">Repeat <input type="number" id="pl${i}rp" oninput="plR(${i})" max=127 min=0 value=${rep>0?rep:1}> times</div>
-<div class="sel">End preset:<br>
+<div class="c">${lA["zkz"][lL]} <input type="number" id="pl${i}rp" oninput="plR(${i})" max=127 min=0 value=${rep>0?rep:1}> ${lA["zkx"][lL]}</div>
+<div class="sel">${lA["zkc"][lL]}<br>
 <div class="sel-p"><select class="sel-ple" id="pl${i}selEnd" onchange="plR(${i})" data-val=${plJson[i].end?plJson[i].end:0}>
-<option value="0">None</option>
-<option value="255">Restore preset</option>
+<option value="0">${lA["zkv"][lL]}</option>
+<option value="255">${lA["zkb"][lL]}</option>
 ${makePlSel(plJson[i].end?plJson[i].end:0, true)}
 </select></div></div>
 </div>
-<div class="c"><button class="btn btn-p" onclick="testPl(${i}, this)"><i class='icons btn-icon'>&#xe139;</i>Test</button></div>`;
+<div class="c"><button class="btn btn-p" onclick="testPl(${i}, this)"><i class='icons btn-icon'>&#xe139;</i>${lA["zkk"][lL]}</button></div>`;
 	} else {
 		content =
 `<label class="check revchkl">
 	<span class="lstIname">
-	Include brightness
+	${lA["zkr"][lL]}
 	</span>
 	<input type="checkbox" id="p${i}ibtgl" checked>
 	<span class="checkmark"></span>
 </label>
 <label class="check revchkl">
 	<span class="lstIname">
-	Save segment bounds
+	${lA["zkt"][lL]}
 	</span>
 	<input type="checkbox" id="p${i}sbtgl" checked>
 	<span class="checkmark"></span>
 </label>
 <label class="check revchkl">
 	<span class="lstIname">
-	Checked segments only
+	${lA["zky"][lL]}
 	</span>
 	<input type="checkbox" id="p${i}sbchk">
 	<span class="checkmark"></span>
@@ -1939,24 +1946,24 @@ ${makePlSel(plJson[i].end?plJson[i].end:0, true)}
 		}
 	}
 
-	return `<input type="text" class="ptxt ${i==0?'show':''}" id="p${i}txt" autocomplete="off" maxlength=32 value="${(i>0)?pName(i):""}" placeholder="Enter name..."/>
-<div class="c">Quick load label: <input type="text" class="stxt" maxlength=2 value="${qlName(i)}" id="p${i}ql" autocomplete="off"/></div>
-<div class="h">(leave empty for no Quick load button)</div>
+	return `<input type="text" class="ptxt ${i==0?'show':''}" id="p${i}txt" autocomplete="off" maxlength=32 value="${(i>0)?pName(i):""}" placeholder="${lA["zaw"][lL]}"/>
+<div class="c">${lA["zki"][lL]} <input type="text" class="stxt" maxlength=2 value="${qlName(i)}" id="p${i}ql" autocomplete="off"/></div>
+<div class="h">${lA["zko"][lL]}</div>
 <div ${pl&&i==0?"style='display:none'":""}>
 <label class="check revchkl">
 	<span class="lstIname">
-	${pl?"Show playlist editor":(i>0)?"Overwrite with state":"Use current state"}
+	${pl?lA["zkm"][lL]:(i>0)?lA["zkn"][lL]:lA["zke"][lL]}
 	</span>
 	<input type="checkbox" id="p${i}cstgl" onchange="tglCs(${i})" ${(i==0||pl)?"checked":""}>
 	<span class="checkmark"></span>
 </label>
 </div>
-<div class="po2" id="p${i}o2">API command<br><textarea class="apitxt" id="p${i}api"></textarea></div>
+<div class="po2" id="p${i}o2">${lA["zkw"][lL]}<br><textarea class="apitxt" id="p${i}api"></textarea></div>
 <div class="po1" id="p${i}o1">${content}</div>
-<div class="c m6">Save to ID <input id="p${i}id" type="number" oninput="checkUsed(${i})" max=250 min=1 value=${(i>0)?i:getLowestUnusedP()}></div>
+<div class="c m6">${lA["zku"][lL]} <input id="p${i}id" type="number" oninput="checkUsed(${i})" max=250 min=1 value=${(i>0)?i:getLowestUnusedP()}></div>
 <div class="c">
-	<button class="btn btn-p" onclick="saveP(${i},${pl})"><i class="icons btn-icon">&#xe390;</i>Save</button>
-	${(i>0)?'<button class="btn btn-p" id="p'+i+'del" onclick="delP('+i+')"><i class="icons btn-icon">&#xe037;</i>Delete':'<button class="btn btn-p" onclick="resetPUtil()">Cancel'}</button>
+	<button class="btn btn-p" onclick="saveP(${i},${pl})"><i class="icons btn-icon">&#xe390;</i>${lA["zkq"][lL]}</button>
+	${(i>0)?'<button class="btn btn-p" id="p'+i+'del" onclick="delP('+i+')"><i class="icons btn-icon">&#xe037;</i>'+lA["zai"][lL]:'<button class="btn btn-p" onclick="resetPUtil()">'+lA["zfw"][lL]}</button>
 </div>
 <div class="pwarn ${(i>0)?"bp":""} c" id="p${i}warn"></div>
 ${(i>0)? ('<div class="h">ID ' +i+ '</div>'):""}`;
@@ -1993,13 +2000,13 @@ function makePlEntry(p,i)
 		<td class="c"><button class="btn btn-pl-add" onclick="addPl(${p},${i})"><i class="icons btn-icon">&#xe18a;</i></button></td>
 	</tr>
 	<tr>
-		<td class="c">Duration</td>
-		<td class="c">Transition</td>
+		<td class="c">${lA["zzw"][lL]}</td>
+		<td class="c">${lA["zze"][lL]}</td>
 		<td class="c">#${i+1}</td>
 	</tr>
 	<tr>
-		<td class="c" width="40%"><input class="segn" type="number" placeholder="Duration" max=6553.0 min=0.2 step=0.1 oninput="pleDur(${p},${i},this)" value="${plJson[p].dur[i]/10.0}">s</td>
-		<td class="c" width="40%"><input class="segn" type="number" placeholder="Transition" max=65.0 min=0.0 step=0.1 oninput="pleTr(${p},${i},this)" value="${plJson[p].transition[i]/10.0}">s</td>
+		<td class="c" width="40%"><input class="segn" type="number" placeholder="${lA["zzw"][lL]}" max=6553.0 min=0.2 step=0.1 oninput="pleDur(${p},${i},this)" value="${plJson[p].dur[i]/10.0}">${lA["oi"][lL]}</td>
+		<td class="c" width="40%"><input class="segn" type="number" placeholder="${lA["zze"][lL]}" max=65.0 min=0.0 step=0.1 oninput="pleTr(${p},${i},this)" value="${plJson[p].transition[i]/10.0}">${lA["oi"][lL]}</td>
 		<td class="c"><button class="btn btn-pl-del" onclick="delPl(${p},${i})"><i class="icons btn-icon">&#xe037;</i></button></div></td>
 	</tr>
 	</table>
@@ -2009,7 +2016,7 @@ function makePlEntry(p,i)
 function makePlUtil()
 {
 	if (pNum < 2) {
-		showToast("You need at least 2 presets to make a playlist!"); //return;
+		showToast(lA["zje"][lL]); //return;
 	}
 	let p = gId('putil');
 	p.classList.remove('staybot');
@@ -2030,8 +2037,8 @@ function resetPUtil()
 	let p = gId('putil');
 	p.classList.add('staybot');
 	p.classList.remove('pres');
-	p.innerHTML = `<button class="btn btn-s" onclick="makePUtil()" style="float:left;"><i class="icons btn-icon">&#xe18a;</i>Preset</button>`
-	+ `<button class="btn btn-s" onclick="makePlUtil()" style="float:right;"><i class="icons btn-icon">&#xe18a;</i>Playlist</button>`;
+	p.innerHTML = `<button class="btn btn-s" onclick="makePUtil()" style="float:left;"><i class="icons btn-icon">&#xe18a;</i>${lA["zjo"][lL]}</button>`
+	+ `<button class="btn btn-s" onclick="makePlUtil()" style="float:right;"><i class="icons btn-icon">&#xe18a;</i>${lA["zjp"][lL]}</button>`;
 }
 
 function tglCs(i)
@@ -2152,7 +2159,7 @@ function setSeg(s)
 function delSeg(s)
 {
 	if (segCount < 2) {
-		showToast("You need to have multiple segments to delete one!");
+		showToast(lA["zfk"][lL]);
 		return;
 	}
 	segCount--;
@@ -2321,7 +2328,7 @@ function setPreset(i)
 		delete obj.n;  // no need for name
 	}
 	if (isPlaylist(i)) obj.on = true; // force on
-	showToast("Loading preset " + pName(i) +" (" + i + ")");
+	showToast(lA["zlw"][lL]+" "+ pName(i) +" (" + i + ")");
 	requestJson(obj);
 }
 
@@ -2329,9 +2336,9 @@ function saveP(i,pl)
 {
 	pI = parseInt(gId(`p${i}id`).value);
 	if (!pI || pI < 1) pI = (i>0) ? i : getLowestUnusedP();
-	if (pI > 250) {alert("Preset ID must be 250 or less."); return;}
+	if (pI > 250) {alert(lA["zkg"][lL]); return;}
 	pN = gId(`p${i}txt`).value;
-	if (pN == "") pN = (pl?"Playlist ":"Preset ") + pI;
+	if (pN == "") pN = (pl?`${lA["zjp"][lL]} `:`${lA["zjo"][lL]} `) + pI;
 	var obj = {};
 	if (!gId(`p${i}cstgl`).checked) {
 		var raw = gId(`p${i}api`).value;
@@ -2340,13 +2347,13 @@ function saveP(i,pl)
 		} catch (e) {
 			obj.win = raw;
 			if (raw.length < 2) {
-				gId(`p${i}warn`).innerHTML = "&#9888; Please enter your API command first";
+				gId(`p${i}warn`).innerHTML = "&#9888; "+lA["zbq"][lL];
 				return;
 			} else if (raw.indexOf('{') > -1) {
-				gId(`p${i}warn`).innerHTML = "&#9888; Syntax error in custom JSON API command";
+				gId(`p${i}warn`).innerHTML = "&#9888; "+lA["zbw"][lL];
 				return;
 			} else if (raw.indexOf("Please") == 0) {
-				gId(`p${i}warn`).innerHTML = "&#9888; Please refresh the page before modifying this preset";
+				gId(`p${i}warn`).innerHTML = "&#9888; "+lA["zbe"][lL];
 				return;
 			}
 		}
@@ -2368,7 +2375,7 @@ function saveP(i,pl)
 	var pQN = gId(`p${i}ql`).value;
 	if (pQN.length > 0) obj.ql = pQN;
 
-	showToast("Saving " + pN +" (" + pI + ")");
+	showToast(lA["zbr"][lL]+" " + pN +" (" + pI + ")");
 	requestJson(obj);
 	if (obj.o) {
 		pJson[pI] = obj;
@@ -2377,7 +2384,7 @@ function saveP(i,pl)
 		delete pJson[pI].v;
 		delete pJson[pI].time;
 	} else {
-		pJson[pI] = {"n":pN, "win":"Please refresh the page to see this newly saved command."};
+		pJson[pI] = {"n":pN, "win":lA["zbt"][lL]};
 		if (obj.win) pJson[pI].win = obj.win;
 		if (obj.ql)  pJson[pI].ql = obj.ql;
 	}
@@ -2389,12 +2396,12 @@ function saveP(i,pl)
 function testPl(i,bt) {
 	if (bt.dataset.test == 1) {
 		bt.dataset.test = 0;
-		bt.innerHTML = "<i class='icons btn-icon'>&#xe139;</i>Test";
+		bt.innerHTML = "<i class='icons btn-icon'>&#xe139;</i>"+lA["zkk"][lL];
 		stopPl();
 		return;
 	}
 	bt.dataset.test = 1;
-	bt.innerHTML = "<i class='icons btn-icon'>&#xe38f;</i>Stop";
+	bt.innerHTML = "<i class='icons btn-icon'>&#xe38f;</i>"+lA["zkl"][lL];
 	var obj = {};
 	obj.playlist = plJson[i];
 	obj.on = true;
@@ -2415,13 +2422,14 @@ function delP(i) {
 		gId('putil').classList.add('staybot');
 	} else {
 		bt.style.color = "var(--c-r)";
-		bt.innerHTML = "<i class='icons btn-icon'>&#xe037;</i>Delete!";
+		bt.innerHTML = "<i class='icons btn-icon'>&#xe037;</i>"+lA["zai"][lL];
 		bt.dataset.cnf = 1;
 	}
 }
 
 function selectSlot(b)
 {
+	let cpick=window.cpick;
 	csel = b;
 	var cd = gId('csl').children;
 	for (let i of cd) i.classList.remove('xxs-w');
@@ -2451,6 +2459,7 @@ function pC(col)
 }
 
 function updatePSliders() {
+	let cpick=window.cpick;
 	// update RGB sliders
 	var col = cpick.color.rgb;
 	gId('sliderR').value = col.r;
@@ -2508,6 +2517,11 @@ function fromHex()
 
 function setPicker(rgb) {
 	var c = new iro.Color(rgb);
+	let cpick=window.cpick;
+
+	function getValue(obj) {
+		return JSON.stringify(obj);
+	}
 	if (c.value > 0) cpick.color.set(c);
 	else cpick.color.setChannel('hsv', 'v', 0);
 	updateTrail(gId('sliderR'));
@@ -2560,6 +2574,7 @@ function fromW()
 // sr 0: from RGB sliders, 1: from picker, 2: from hex
 function setColor(sr)
 {
+	let cpick=window.cpick;
 	var cd = gId('csl').children; // color slots
 	let cdd = cd[csel].dataset;
 	let w = 0, r,g,b;
@@ -2619,7 +2634,7 @@ function cnfReset()
 	if (!cnfr) {
 		var bt = gId('resetbtn');
 		bt.style.color = "var(--c-r)";
-		bt.innerHTML = "Confirm Reboot";
+		bt.innerHTML = lA["zqh"][lL];
 		cnfr = true; return;
 	}
 	window.location.href = getURL("/reset");
@@ -2631,12 +2646,12 @@ function rSegs()
 	var bt = gId('rsbtn');
 	if (!cnfrS) {
 		bt.style.color = "var(--c-r)";
-		bt.innerHTML = "Confirm reset";
+		bt.innerHTML = lA["zsq"][lL];
 		cnfrS = true; return;
 	}
 	cnfrS = false;
 	bt.style.color = "var(--c-f)";
-	bt.innerHTML = "Reset segments";
+	bt.innerHTML = lA["zsw"][lL];
 	var obj = {"seg":[{"start":0,"stop":ledCount,"sel":true}]};
 	if (isM) {
 		obj.seg[0].stop = mw;

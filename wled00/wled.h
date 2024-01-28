@@ -3,12 +3,12 @@
 /*
    Main sketch, global variable declarations
    @title WLED project sketch
-   @version 0.14.1
+   @version 0.14.1-a1
    @author Christian Schwinne
  */
 
 // version code in format yymmddb (b = daily build)
-#define VERSION 2401141
+#define VERSION 2401060
 
 //uncomment this if you have a "my_config.h" file you'd like to use
 //#define WLED_USE_MY_CONFIG
@@ -483,7 +483,7 @@ WLED_GLOBAL bool analogClockSecondsTrail _INIT(false);      // Display seconds a
 WLED_GLOBAL bool analogClock5MinuteMarks _INIT(false);      // Light pixels at every 5-minute position
 
 WLED_GLOBAL bool countdownMode _INIT(false);                         // Clock will count down towards date
-WLED_GLOBAL byte countdownYear _INIT(20), countdownMonth _INIT(1);   // Countdown target date, year is last two digits
+WLED_GLOBAL byte countdownYear _INIT(24), countdownMonth _INIT(1);   // Countdown target date, year is last two digits
 WLED_GLOBAL byte countdownDay  _INIT(1) , countdownHour  _INIT(0);
 WLED_GLOBAL byte countdownMin  _INIT(0) , countdownSec   _INIT(0);
 
